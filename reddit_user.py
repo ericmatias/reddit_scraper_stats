@@ -1,15 +1,26 @@
 
 
 
-class RedditUser:
+class RedditUserData:
 
-    def __init__(self, username):
+
+    data_types = {"t1" : "comment"
+                , "t2" : "account"
+                , "t3" : "link"
+                , "t4" : "message"
+                , "t5" : "subreddit"
+                , "t6" : "award"}
+
+    def __init__(self, username, driver):
 
         self.username = username
+        self.driver = driver
+
+
 
     #   Get Comment Data stats
 
-    def get_all_subs_commented(self):
+    def get_sub_commented(self):
         pass
 
     def time_sub_was_commented(self):
@@ -21,7 +32,8 @@ class RedditUser:
     def number_of_comments_in_sub_commented_in(self):
         pass
 
-
+    def get_all_subs_commented(self):
+        pass
 
     #   Post Submission Data stats
 
