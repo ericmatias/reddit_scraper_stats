@@ -1,10 +1,11 @@
 import selenium
 import json
+import datetime
 
 
 class RedditUserScraper:
 
-    def __init__(self, username, driver):
+    def __init__(self, username, driver=None):
 
         self.username = username
         self.has_next_page = None
@@ -17,6 +18,10 @@ class RedditUserScraper:
     @property
     def base_url(self):
         return 'https://www.reddit.com/user/{}.json'.format(self.username)
+
+    @staticmethod
+    def convert_unixtimestamp_to_ymdhms(unix_timestamp):
+        return datetime.datetime.fromtimestamp(int(unix_timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 
     @staticmethod
     def get_before_value(json_data):
@@ -82,7 +87,11 @@ class RedditUserScraper:
                 sub = self.get_sub_commented_in(child_list[i])
 
                 if sub in self.comment_sub_count:
-                    self.comment_sub_count[sub] = self.comment_sub_count[sub] + 1
+                    self.comment_sub_count[sub]['comment_count'] = self.comment_sub_count[sub]['comment_count'] + 1
+                    self.comment_sub_count[sub]['times_posted'].append(self.get_comment_time(child_list[i]))
                 else:
-                    self.comment_sub_count[sub] = 1
+                    self.comment_sub_count[sub] = {'comment_count': 1, 'times_posted' : [self.get_comment_time(child_list[i])]}
             i = 1 + i
+
+    def get_comment_time(self, child):
+        return self.convert_unixtimestamp_to_ymdhms(child['data']['created_utc'])
